@@ -17,8 +17,8 @@ By working through this tutorial, you will:
 
 The folder contains:
 
-- `SIR_Model_Tutorial.Rmd`: An RMarkdown file with the full problem sheet, including code, explanations, and exercises.
-- `SIR_Model_Tutorial.html`: A pre-rendered HTML version of the problem sheet for quick access and review.
+- `SIR_and_R0.Rmd`: An RMarkdown file with the full problem sheet, including code, explanations, and exercises.
+- `SIR_and_R0.html`: A pre-rendered HTML version of the problem sheet for quick access and review.
 
 ## Getting Started
 
