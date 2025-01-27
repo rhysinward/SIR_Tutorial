@@ -1,0 +1,352 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={SIR Model and R0 Calculation},
+  pdfauthor={Rhys Inward},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{SIR Model and R0 Calculation}
+\author{Rhys Inward}
+\date{2024-11-25}
+
+\begin{document}
+\maketitle
+
+\hypertarget{sir-model-and-r0-calculation-in-r}{%
+\section{SIR Model and R0 Calculation in
+R}\label{sir-model-and-r0-calculation-in-r}}
+
+\hypertarget{introduction}{%
+\subsection{Introduction}\label{introduction}}
+
+In this tutorial, we will explore the SIR
+(Susceptible-Infectious-Recovered) model, a fundamental mathematical
+model in epidemiology used to understand the spread of infectious
+diseases. The objectives of this tutorial are:
+
+\begin{itemize}
+\tightlist
+\item
+  Explain what the basic reproduction number (R0) is.
+\item
+  Introduce the SIR model and how it can be used to calculate R0.
+\item
+  Investigate how changes in the transmission rate (\(\beta\)) and
+  recovery rate (\(\gamma\)) affect R0 and the epidemic dynamics.
+\item
+  Introduce an intervention and analyse how changing its timing impacts
+  the overall epidemic size.
+\end{itemize}
+
+By the end of this tutorial, you will have a deeper understanding of
+infectious disease modeling and the critical factors that influence
+epidemic outcomes.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{what-is-r0}{%
+\subsection{1. What is R0?}\label{what-is-r0}}
+
+The \textbf{basic reproduction number}, denoted as \textbf{R0}, is a key
+epidemiological metric that represents the average number of secondary
+infections produced by one infected individual in a completely
+susceptible population.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{If R0 \textgreater{} 1}: Each infected person infects more
+  than one person on average, leading to the potential for an epidemic.
+\item
+  \textbf{If R0 \textless{} 1}: The infection will likely die out over
+  time.
+\end{itemize}
+
+Understanding R0 helps in assessing the potential for disease spread and
+in planning control strategies.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{the-sir-model}{%
+\subsection{2. The SIR Model}\label{the-sir-model}}
+
+The \textbf{SIR model} is a simple mathematical model to simulate how a
+disease spreads through a population. It divides the population into
+three compartments:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{S (Susceptible)}: Individuals who are susceptible to the
+  disease.
+\item
+  \textbf{I (Infectious)}: Individuals who are infected and can spread
+  the disease.
+\item
+  \textbf{R (Recovered)}: Individuals who have recovered from the
+  disease and are immune (can no longer transmit).
+\end{itemize}
+
+The transitions between these compartments are governed by two
+parameters:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(\beta\) (beta)}: The transmission rate, representing the
+  probability of transmission per contact - i.e.~how fast a disease
+  spreads.
+\item
+  \textbf{\(\gamma\) (gamma)}: The recovery rate, representing the rate
+  at which infected individuals recover and gain immunity.
+\end{itemize}
+
+The model is described by the following differential equations:
+
+\[
+\begin{align*}
+\frac{dS}{dt} &= -\beta \frac{S I}{N} \\
+\frac{dI}{dt} &= \beta \frac{S I}{N} - \gamma I \\
+\frac{dR}{dt} &= \gamma I
+\end{align*}
+\]
+
+Where \(N = S + I + R\) is the total population.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{calculating-r0-from-sir-model-parameters}{%
+\subsection{3. Calculating R0 from SIR Model
+Parameters}\label{calculating-r0-from-sir-model-parameters}}
+
+In the context of the SIR model, the basic reproduction number R0 is
+calculated as:
+
+\[
+R_0 = \frac{\beta}{\gamma}
+\]
+
+This formula shows that R0 increases with a higher transmission rate and
+decreases with a higher recovery rate.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{implementing-the-sir-model}{%
+\subsection{4. Implementing the SIR
+Model}\label{implementing-the-sir-model}}
+
+\hypertarget{setup}{%
+\subsubsection{Setup}\label{setup}}
+
+Ensure that you have the necessary packages installed and loaded.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Install packages if not already installed}
+\NormalTok{required\_packages }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"deSolve"}\NormalTok{, }\StringTok{"ggplot2"}\NormalTok{, }\StringTok{"reshape2"}\NormalTok{)}
+
+\NormalTok{installed\_packages }\OtherTok{\textless{}{-}} \FunctionTok{rownames}\NormalTok{(}\FunctionTok{installed.packages}\NormalTok{())}
+\ControlFlowTok{for}\NormalTok{(p }\ControlFlowTok{in}\NormalTok{ required\_packages)\{}
+  \ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\NormalTok{(p }\SpecialCharTok{\%in\%}\NormalTok{ installed\_packages))\{}
+    \FunctionTok{install.packages}\NormalTok{(p, }\AttributeTok{dependencies =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+
+\CommentTok{\# Load the packages}
+\FunctionTok{library}\NormalTok{(deSolve)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(reshape2)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{define-model-parameters}{%
+\subsubsection{Define Model Parameters}\label{define-model-parameters}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Total population}
+\NormalTok{N }\OtherTok{\textless{}{-}} \FloatTok{1e5}  \CommentTok{\# 100,000 individuals}
+
+\CommentTok{\# Initial number of infected and recovered individuals}
+\NormalTok{I0 }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{R0\_initial }\OtherTok{\textless{}{-}} \DecValTok{0}
+
+\CommentTok{\# Initial number of susceptible individuals}
+\NormalTok{S0 }\OtherTok{\textless{}{-}}\NormalTok{ N }\SpecialCharTok{{-}}\NormalTok{ I0 }\SpecialCharTok{{-}}\NormalTok{ R0\_initial}
+
+\CommentTok{\# Transmission rate (beta) and recovery rate (gamma)}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FloatTok{0.3}    \CommentTok{\# Transmission rate}
+\NormalTok{gamma }\OtherTok{\textless{}{-}} \FloatTok{0.1}   \CommentTok{\# Recovery rate}
+
+\CommentTok{\# Calculate R0}
+\NormalTok{R0\_value }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{/}\NormalTok{ gamma}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"The basic reproduction number R0 is:"}\NormalTok{, R0\_value, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The basic reproduction number R0 is: 3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Time points (in days)}
+\NormalTok{times }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{160}\NormalTok{, }\AttributeTok{by =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sir\_model }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(time, state, parameters) \{}
+  \FunctionTok{with}\NormalTok{(}\FunctionTok{as.list}\NormalTok{(}\FunctionTok{c}\NormalTok{(state, parameters)), \{}
+    \CommentTok{\# Rates of change}
+\NormalTok{    dS }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\NormalTok{beta }\SpecialCharTok{*}\NormalTok{ S }\SpecialCharTok{*}\NormalTok{ I }\SpecialCharTok{/}\NormalTok{ N}
+\NormalTok{    dI }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{*}\NormalTok{ S }\SpecialCharTok{*}\NormalTok{ I }\SpecialCharTok{/}\NormalTok{ N }\SpecialCharTok{{-}}\NormalTok{ gamma }\SpecialCharTok{*}\NormalTok{ I}
+\NormalTok{    dR }\OtherTok{\textless{}{-}}\NormalTok{ gamma }\SpecialCharTok{*}\NormalTok{ I}
+
+    \CommentTok{\# Return the rates of change}
+    \FunctionTok{list}\NormalTok{(}\FunctionTok{c}\NormalTok{(dS, dI, dR))}
+\NormalTok{  \})}
+\NormalTok{\}}
+
+\CommentTok{\# Initial state vector}
+\NormalTok{init\_state }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\AttributeTok{S =}\NormalTok{ S0, }\AttributeTok{I =}\NormalTok{ I0, }\AttributeTok{R =}\NormalTok{ R0\_initial)}
+
+\CommentTok{\# Parameters vector}
+\NormalTok{parameters }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\AttributeTok{beta =}\NormalTok{ beta, }\AttributeTok{gamma =}\NormalTok{ gamma)}
+
+
+\CommentTok{\# Solve the system using ode solver}
+\NormalTok{sir\_output }\OtherTok{\textless{}{-}} \FunctionTok{ode}\NormalTok{(}\AttributeTok{y =}\NormalTok{ init\_state, }\AttributeTok{times =}\NormalTok{ times, }\AttributeTok{func =}\NormalTok{ sir\_model, }\AttributeTok{parms =}\NormalTok{ parameters)}
+
+\CommentTok{\# Convert output to data frame}
+\NormalTok{sir\_output }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(sir\_output)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plotting-the-results}{%
+\subsubsection{Plotting the results}\label{plotting-the-results}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Reshape data for plotting}
+\NormalTok{sir\_long }\OtherTok{\textless{}{-}} \FunctionTok{melt}\NormalTok{(sir\_output, }\AttributeTok{id =} \StringTok{"time"}\NormalTok{, }\AttributeTok{measure =} \FunctionTok{c}\NormalTok{(}\StringTok{"S"}\NormalTok{, }\StringTok{"I"}\NormalTok{, }\StringTok{"R"}\NormalTok{))}
+
+\CommentTok{\# Plot the SIR curves}
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ sir\_long, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ time, }\AttributeTok{y =}\NormalTok{ value, }\AttributeTok{color =}\NormalTok{ variable)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{x =} \StringTok{"Time (days)"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Number of Individuals"}\NormalTok{,}
+    \AttributeTok{title =} \StringTok{"SIR Model Simulation"}\NormalTok{,}
+    \AttributeTok{color =} \StringTok{"Compartment"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{SIR_and_R0_files/figure-latex/plot-1.pdf}
+
+\end{document}

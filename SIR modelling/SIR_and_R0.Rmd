@@ -1,0 +1,482 @@
+---
+title: "SIR Model and R0 Calculation"
+author: "Rhys Inward"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+## Introduction
+
+In this tutorial, we will explore the SIR (Susceptible-Infectious-Recovered) model, a fundamental mathematical model in epidemiology used to understand the spread of infectious diseases. The objectives of this tutorial are:
+
+- Explain what the basic reproduction number (R<sub>0</sub>) is.
+- Introduce the SIR model and how it can be used to calculate R<sub>0</sub>.
+- Investigate how changes in the transmission rate ($\beta$) and recovery rate ($\gamma$) affect R<sub>0</sub> and the epidemic dynamics.
+- Introduce an intervention and analyse how changing its timing impacts the overall epidemic size.
+
+By the end of this tutorial, you will have a deeper understanding of infectious disease modeling and the critical factors that influence epidemic outcomes.
+
+---
+
+## 1. What is R<sub>0</sub>?
+
+The **basic reproduction number**, denoted as **R<sub>0</sub>**, is a key epidemiological metric that represents the average number of secondary infections produced by one infected individual in a completely susceptible population.
+
+- **If R<sub>0</sub> > 1**: Each infected person infects more than one person on average, leading to the potential for an epidemic.
+- **If R<sub>0</sub> < 1**: The infection will likely die out over time.
+
+Understanding R<sub>0</sub> helps in assessing the potential for disease spread and in planning control strategies.
+
+---
+
+## 2. The SIR Model   
+
+The **SIR model** is a simple mathematical model to simulate how a disease spreads through a population. It divides the population into three compartments:
+
+- **S (Susceptible)**: Individuals who are susceptible to the disease.
+- **I (Infectious)**: Individuals who are infected and can spread the disease.
+- **R (Recovered)**: Individuals who have recovered from the disease and are immune (can no longer transmit).
+
+The transitions between these compartments are governed by two parameters:
+
+- **$\beta$ (beta)**: The transmission rate, representing the probability of transmission per contact - i.e. how fast a disease spreads.
+- **$\gamma$ (gamma)**: The recovery rate, representing the rate at which infected individuals recover and gain immunity.
+
+The model is described by the following differential equations:
+
+\[
+\begin{align*}
+\frac{dS}{dt} &= -\beta \frac{S I}{N} \\
+\frac{dI}{dt} &= \beta \frac{S I}{N} - \gamma I \\
+\frac{dR}{dt} &= \gamma I
+\end{align*}
+\]
+
+Where \( N = S + I + R \) is the total population.
+
+---
+
+## 3. Calculating R<sub>0</sub> from SIR Model Parameters
+
+In the context of the SIR model, the basic reproduction number R<sub>0</sub> is calculated as:
+
+\[
+R_0 = \frac{\beta}{\gamma}
+\]
+
+This formula shows that R<sub>0</sub> increases with a higher transmission rate and decreases with a higher recovery rate.
+
+---
+
+## 4. Implementing the SIR Model
+
+### Setup
+
+Ensure that you have the necessary packages installed and loaded.
+
+```{r setup, message=FALSE, warning=FALSE}
+# Install packages if not already installed
+required_packages <- c("deSolve", "ggplot2", "reshape2")
+
+installed_packages <- rownames(installed.packages())
+for(p in required_packages){
+  if(!(p %in% installed_packages)){
+    install.packages(p, dependencies = TRUE)
+  }
+}
+
+
+# Load the packages
+library(deSolve)
+library(ggplot2)
+library(reshape2)
+
+```
+
+### Define Model Parameters
+
+```{r model set up, message=FALSE, warning=FALSE}
+
+# Total population
+N <- 1e5  # 100,000 individuals
+
+# Initial number of infected and recovered individuals
+I0 <- 1
+R0_initial <- 0
+
+# Initial number of susceptible individuals
+S0 <- N - I0 - R0_initial
+
+# Transmission rate (beta) and recovery rate (gamma)
+beta <- 0.3    # Transmission rate
+gamma <- 0.1   # Recovery rate
+
+# Calculate R0
+R0_value <- beta / gamma
+cat("The basic reproduction number R0 is:", R0_value, "\n")
+
+# Time points (in days)
+times <- seq(0, 160, by = 1)
+```
+
+```{r SIR model, message=FALSE, warning=FALSE}
+
+sir_model <- function(time, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    # Rates of change
+    dS <- -beta * S * I / N
+    dI <- beta * S * I / N - gamma * I
+    dR <- gamma * I
+
+    # Return the rates of change
+    list(c(dS, dI, dR))
+  })
+}
+
+# Initial state vector
+init_state <- c(S = S0, I = I0, R = R0_initial)
+
+# Parameters vector
+parameters <- c(beta = beta, gamma = gamma)
+
+
+# Solve the system using ode solver
+sir_output <- ode(y = init_state, times = times, func = sir_model, parms = parameters)
+
+# Convert output to data frame
+sir_output <- as.data.frame(sir_output)
+```
+
+### Plotting the results
+
+```{r plot, message=FALSE, warning=FALSE}
+
+# Reshape data for plotting
+sir_long <- melt(sir_output, id = "time", measure = c("S", "I", "R"))
+
+# Plot the SIR curves
+ggplot(data = sir_long, aes(x = time, y = value, color = variable)) +
+  geom_line(size = 1) +
+  labs(
+    x = "Time (days)",
+    y = "Number of Individuals",
+    title = "SIR Model Simulation",
+    color = "Compartment"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## 5. Exploring the Impact of $\beta$ and $\gamma$ on R<sub>0</sub>
+
+### Varying the Transmission Rate ($\beta$)
+
+Let's investigate how changes in the transmission rate ($\beta$) affect the basic reproduction number R<sub>0</sub> and the epidemic dynamics.
+
+```{r beta, message=FALSE, warning=FALSE}
+
+# Increase beta
+beta_high <- 0.6  # Higher transmission rate
+R0_high_beta <- beta_high / gamma
+cat("With higher beta, R0 is:", R0_high_beta, "\n")
+
+# Update parameters
+parameters_high_beta <- c(beta = beta_high, gamma = gamma)
+
+# Run simulation
+sir_output_high_beta <- ode(y = init_state, times = times, func = sir_model, parms = parameters_high_beta)
+sir_output_high_beta <- as.data.frame(sir_output_high_beta)
+sir_output_high_beta$Scenario <- "High β"
+```
+
+### Varying the Recovery Rate ($\gamma$)
+
+Next, let's explore how changes in the recovery rate ($\gamma$) affect the basic reproduction number R<sub>0</sub> and the epidemic dynamics.
+
+```{r gamma, message=FALSE, warning=FALSE}
+
+# Decrease gamma
+gamma_low <- 0.05  # Lower recovery rate
+R0_low_gamma <- beta / gamma_low
+cat("With lower gamma, R0 is:", R0_low_gamma, "\n")
+
+# Update parameters
+parameters_low_gamma <- c(beta = beta, gamma = gamma_low)
+
+# Run simulation
+sir_output_low_gamma <- ode(y = init_state, times = times, func = sir_model, parms = parameters_low_gamma)
+sir_output_low_gamma <- as.data.frame(sir_output_low_gamma)
+sir_output_low_gamma$Scenario <- "Low γ"
+```
+
+### Comparing Scenarious
+
+```{r compare, message=FALSE, warning=FALSE}
+
+# Add scenario labels
+sir_output$Scenario <- "Original"
+
+# Combine outputs
+combined_output <- rbind(
+  sir_output,
+  sir_output_high_beta,
+  sir_output_low_gamma
+)
+
+# Reshape data
+sir_long_combined <- melt(combined_output, id = c("time", "Scenario"), measure = "I")
+
+# Plot comparisons
+ggplot(data = sir_long_combined, aes(x = time, y = value, color = Scenario)) +
+  geom_line(size = 1) +
+  labs(
+    x = "Time (days)",
+    y = "Number of Infected Individuals",
+    title = "Impact of β and γ on Infection Curve",
+    color = "Scenario"
+  ) +
+  theme_minimal()
+
+```
+
+---
+
+## 6. Introducing an Intervention 
+
+Suppose an intervention (e.g., social distancing) is implemented to reduce the transmission rate β at a certain time.
+
+### Modifying the Model for Intervention
+
+```{r intervention, message=FALSE, warning=FALSE}
+
+# Intervention parameters
+intervention_time <- 30    # Day when intervention starts
+beta_reduced <- 0.2        # Reduced beta after intervention
+
+# Updated model with intervention
+sir_model_intervention <- function(time, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    # Adjust beta after intervention time
+    beta_effective <- ifelse(time >= intervention_time, beta_reduced, beta)
+
+    # Rates of change
+    dS <- -beta_effective * S * I / N
+    dI <- beta_effective * S * I / N - gamma * I
+    dR <- gamma * I
+
+    # Return rates of change
+    list(c(dS, dI, dR))
+  })
+}
+
+```
+
+### Running the Model with Intervention
+
+```{r run intervention, message=FALSE, warning=FALSE}
+
+# Run simulation
+sir_output_intervention <- ode(y = init_state, times = times, func = sir_model_intervention, parms = parameters)
+sir_output_intervention <- as.data.frame(sir_output_intervention)
+sir_output_intervention$Scenario <- "Intervention"
+
+# Add scenario label to original output
+sir_output$Scenario <- "No Intervention"
+
+# Combine outputs
+combined_output <- rbind(sir_output, sir_output_intervention)
+
+# Reshape data
+sir_long_combined <- melt(combined_output, id = c("time", "Scenario"), measure = "I")
+```
+
+### Plotting the Impact of Intervention
+
+```{r plot intervention, message=FALSE, warning=FALSE}
+
+# Plot comparison
+ggplot(data = sir_long_combined, aes(x = time, y = value, color = Scenario)) +
+  geom_line(size = 1) +
+  labs(
+    x = "Time (days)",
+    y = "Number of Infected Individuals",
+    title = "Impact of Intervention on Infection Curve",
+    color = "Scenario"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## 7. Changing the Timing of the Intervention
+
+Let's explore how the timing of the intervention affects the epidemic dynamics.
+
+### Early Intervention
+
+```{r early intervention, message=FALSE, warning=FALSE}
+
+# Early intervention time
+intervention_time_early <- 15  # Intervention starts on day 15
+
+# Updated model for early intervention
+sir_model_intervention_early <- function(time, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    beta_effective <- ifelse(time >= intervention_time_early, beta_reduced, beta)
+    dS <- -beta_effective * S * I / N
+    dI <- beta_effective * S * I / N - gamma * I
+    dR <- gamma * I
+    list(c(dS, dI, dR))
+  })
+}
+
+# Run simulation
+sir_output_intervention_early <- ode(y = init_state, times = times, func = sir_model_intervention_early, parms = parameters)
+sir_output_intervention_early <- as.data.frame(sir_output_intervention_early)
+sir_output_intervention_early$Scenario <- "Early Intervention"
+```
+
+### Late Intervention
+
+```{r late intervention, message=FALSE, warning=FALSE}
+
+# Late intervention time
+intervention_time_late <- 45  # Intervention starts on day 45
+
+# Updated model for late intervention
+sir_model_intervention_late <- function(time, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    beta_effective <- ifelse(time >= intervention_time_late, beta_reduced, beta)
+    dS <- -beta_effective * S * I / N
+    dI <- beta_effective * S * I / N - gamma * I
+    dR <- gamma * I
+    list(c(dS, dI, dR))
+  })
+}
+
+# Run simulation
+sir_output_intervention_late <- ode(y = init_state, times = times, func = sir_model_intervention_late, parms = parameters)
+sir_output_intervention_late <- as.data.frame(sir_output_intervention_late)
+sir_output_intervention_late$Scenario <- "Late Intervention"
+```
+
+### Comparing the Timing of Intervention
+
+```{r compare intervention, message=FALSE, warning=FALSE}
+
+# Combine all outputs
+combined_output <- rbind(
+  sir_output_intervention_early,
+  sir_output_intervention,
+  sir_output_intervention_late
+)
+
+# Reshape data
+sir_long_combined <- melt(combined_output, id = c("time", "Scenario"), measure = "I")
+
+# Plot comparisons
+ggplot(data = sir_long_combined, aes(x = time, y = value, color = Scenario)) +
+  geom_line(size = 1) +
+  labs(
+    x = "Time (days)",
+    y = "Number of Infected Individuals",
+    title = "Impact of Intervention Timing on Infection Curve",
+    color = "Scenario"
+  ) +
+  theme_minimal()
+```
+
+## 8. Analysing the Impact on the Epidemic Size
+
+Let's compare the impact of different intervention timings on the final epidemic size.
+
+### Calculating the Final Epidemic Size
+
+```{r final epidemic size, message=FALSE, warning=FALSE}
+
+calculate_total_infected <- function(output) {
+  total_infected <- max(output$R)
+  return(total_infected)
+}
+
+# Total infections in each scenario
+total_infected_no_intervention <- calculate_total_infected(sir_output)
+total_infected_early <- calculate_total_infected(sir_output_intervention_early)
+total_infected_on_time <- calculate_total_infected(sir_output_intervention)
+total_infected_late <- calculate_total_infected(sir_output_intervention_late)
+
+# Display results
+cat("Total infected without intervention:", round(total_infected_no_intervention), "\n")
+cat("Total infected with early intervention:", round(total_infected_early), "\n")
+cat("Total infected with intervention at day 30:", round(total_infected_on_time), "\n")
+cat("Total infected with late intervention:", round(total_infected_late), "\n")
+```
+
+## 9. Conclusion
+
+- Explained R<sub>0</sub>: Understood its importance in disease spread.
+- Introduced the SIR Model: Learned how to implement it in R.
+- Calculated R<sub>0</sub>: Derived it from $\beta$ and $\gamma$.
+- Analysed Parameter Changes: Observed how $\beta$ and $\gamma$ affect R<sub>0</sub> and epidemic dynamics.
+- Explored Interventions: Investigated the impact of interventions and their timing on the epidemic.
+
+Understanding the interplay between model parameters and disease dynamics is essential for effective public health planning and response to infectious disease outbreaks.
+
+## 10. Questions and Exercises
+
+To reinforce your understanding of the SIR model and the impact of various parameters and interventions on disease dynamics, please answer the following questions. Where applicable, you are encouraged to modify the R code provided in the tutorial to explore different scenarios and validate your answers.
+
+### **Question 1: Understanding R<sub>0</sub>**
+
+**a.** Explain, in layman's terms, what the basic reproduction number (R<sub>0</sub>) signifies in the context of infectious diseases.
+
+**b.** If R<sub>0</sub> is calculated to be 2.5, what does this imply about the potential spread of the disease?
+
+**c.** Provide an example of two diseases, one with a low R<sub>0</sub> and one with a high R<sub>0</sub>. What does this tell you about their pandemic potential?
+
+### **Question 2: SIR Model Parameters**
+
+**a.** Given the formula \( R_0 = \frac{\beta}{\gamma} \), what would happen to R<sub>0</sub> if the transmission rate ($\beta$) is doubled while the recovery rate ($\gamma$) remains unchanged?
+
+**b.** Conversely, what would be the effect on R<sub>0</sub> if the recovery rate ($\gamma$) is increased by doubled while the transmission rate ($\beta$) stays the same?
+
+### **Question 3: Impact of Parameter Changes**
+
+Using the R code from **Section 5: Exploring the Impact of ($\beta$) and ($\gamma$) on R<sub>0</sub>**, answer and perform the following:
+
+**a.** Explain how changes in the transmission rate ($\beta$) and recovery rate ($\gamma$) affect the epidemic curve and the total number of infections.
+
+**b.** In which scenario would you expect the epidemic to peak earlier and have a lower total number of infections: when $\beta$ is increased to 0.45 or when $\gamma$ is decreased to 0.15? Validate your answer by modifying the R code accordingly.
+
+**c.** Plot the infection curves for the original, modified β, and modified γ scenarios on the same graph. What observations can you make about the peak infection times and the total number of infections?
+
+### **Question 4: Analysing Interventions**
+
+**a.** In **Section 6: Introducing an Intervention**, an intervention reduces the transmission rate ($\beta$) from 0.3 to 0.2 starting on day 30. Calculate the new R<sub>0</sub> post-intervention and discuss its implications.
+
+**b.** Suppose an intervention is implemented earlier, on day 10, reducing β to 0.05. Predict how this earlier intervention would affect the epidemic curve and the total number of infections. Validate your prediction by modifying the R code accordingly.
+
+### **Question 5: Timing of Interventions**
+
+Reflecting on **Section 7: Changing the Timing of the Intervention**, answer the following:
+
+**a.** Compare the total number of infections in the scenarios where interventions are implemented early (day 15), on time (day 30), and late (day 45). Which timing is most effective in controlling the epidemic, and why?
+
+**b.** How does the timing of an intervention influence the peak number of infections and the duration of the epidemic? Provide a detailed explanation based on the simulation results.
+
+### **Question 6: Exploring Different Scenarios**
+
+**a.** Assume a scenario where both $\beta$ and $\gamma$ are altered simultaneously. For example, set $\beta$ = 0.25 and $\gamma$ = 0.125. Calculate the resulting R<sub>0</sub> and simulate the epidemic curve. How does this combined change compare to altering $\beta$ and $\gamma$ individually?
+
+### **Question 7: Critical Thinking**
+
+**a.** Discuss the limitations of the SIR model in real-world epidemic modeling. What factors are not accounted for in this model that could influence disease spread?
+
+**b.** How might the introduction of additional compartments (e.g., Exposed, Asymptomatic, Vector) enhance the SIR model's accuracy in simulating real-world epidemics? Which diseases do you think would benefit from these additional compartments?
+
+**c.** What are the limitations of R<sub>0</sub> and what alternative epidemiological parameters can be used to describe disease spread?
